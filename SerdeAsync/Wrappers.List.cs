@@ -172,9 +172,7 @@ namespace Serde
         {
             static ImmutableArray<T> IDeserialize<ImmutableArray<T>>.Deserialize<D>(ref D deserializer)
             {
-                return deserializer.DeserializeEnumerable<
-                    ImmutableArray<T>,
-                    Visitor>(new Visitor());
+                return deserializer.DeserializeEnumerable(new Visitor());
             }
 
             private struct Visitor : IDeserializeVisitor<ImmutableArray<T>>

@@ -1,7 +1,9 @@
 
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 
 namespace Serde
 {
@@ -47,7 +49,7 @@ namespace Serde
         T VisitUtf8Span(ReadOnlySpan<byte> s) => throw new InvalidDeserializeValueException("Expected type " + ExpectedTypeName);
         T VisitEnumerable<D>(ref D d) where D : IDeserializeEnumerable
             => throw new InvalidDeserializeValueException("Expected type " + ExpectedTypeName);
-        T VisitDictionary<D>(ref D d) where D : IDeserializeDictionary
+        ValueTask<T> VisitDictionary(IDeserializeDictionary d)
             => throw new InvalidDeserializeValueException("Expected type " + ExpectedTypeName);
         T VisitNull() => throw new InvalidOperationException("Expected type " + ExpectedTypeName);
         T VisitNotNull<D>(ref D d) where D : IDeserializer => throw new InvalidOperationException("Expected type " + ExpectedTypeName);
@@ -62,10 +64,10 @@ namespace Serde
 
     public interface IDeserializeDictionary
     {
-        bool TryGetNextKey<K, D>([MaybeNullWhen(false)] out K next)
+        ValueTask<(bool HasNext, K Key)> TryGetNextKey<K, D>()
             where D : IDeserialize<K>;
         V GetNextValue<V, D>() where D : IDeserialize<V>;
-        bool TryGetNextEntry<K, DK, V, DV>([MaybeNullWhen(false)] out (K, V) next)
+        ValueTask<(bool HasNext, (K, V) Entry)> TryGetNextEntry<K, DK, V, DV>()
             where DK : IDeserialize<K>
             where DV : IDeserialize<V>;
         int? SizeOpt { get; }
@@ -73,25 +75,25 @@ namespace Serde
 
     public interface IDeserializer
     {
-        T DeserializeAny<T, V>(V v) where V : IDeserializeVisitor<T>;
-        T DeserializeBool<T, V>(V v) where V : IDeserializeVisitor<T>;
-        T DeserializeChar<T, V>(V v) where V : IDeserializeVisitor<T>;
-        T DeserializeByte<T, V>(V v) where V : IDeserializeVisitor<T>;
-        T DeserializeU16<T, V>(V v) where V : IDeserializeVisitor<T>;
-        T DeserializeU32<T, V>(V v) where V : IDeserializeVisitor<T>;
-        T DeserializeU64<T, V>(V v) where V : IDeserializeVisitor<T>;
-        T DeserializeSByte<T, V>(V v) where V : IDeserializeVisitor<T>;
-        T DeserializeI16<T, V>(V v) where V : IDeserializeVisitor<T>;
-        T DeserializeI32<T, V>(V v) where V : IDeserializeVisitor<T>;
-        T DeserializeI64<T, V>(V v) where V : IDeserializeVisitor<T>;
-        T DeserializeFloat<T, V>(V v) where V : IDeserializeVisitor<T>;
-        T DeserializeDouble<T, V>(V v) where V : IDeserializeVisitor<T>;
-        T DeserializeDecimal<T, V>(V v) where V : IDeserializeVisitor<T>;
-        T DeserializeString<T, V>(V v) where V : IDeserializeVisitor<T>;
-        T DeserializeIdentifier<T, V>(V v) where V : IDeserializeVisitor<T>;
-        T DeserializeType<T, V>(string typeName, ReadOnlySpan<string> fieldNames, V v) where V : IDeserializeVisitor<T>;
-        T DeserializeEnumerable<T, V>(V v) where V : IDeserializeVisitor<T>;
-        T DeserializeDictionary<T, V>(V v) where V : IDeserializeVisitor<T>;
-        T DeserializeNullableRef<T, V>(V v) where V : IDeserializeVisitor<T>;
+        ValueTask<T> DeserializeAny<T>(IDeserializeVisitor<T> v);
+        ValueTask<T> DeserializeBool<T>(IDeserializeVisitor<T> v);
+        ValueTask<T> DeserializeChar<T>(IDeserializeVisitor<T> v);
+        ValueTask<T> DeserializeByte<T>(IDeserializeVisitor<T> v);
+        ValueTask<T> DeserializeU16<T>(IDeserializeVisitor<T> v);
+        ValueTask<T> DeserializeU32<T>(IDeserializeVisitor<T> v);
+        ValueTask<T> DeserializeU64<T>(IDeserializeVisitor<T> v);
+        ValueTask<T> DeserializeSByte<T>(IDeserializeVisitor<T> v);
+        ValueTask<T> DeserializeI16<T>(IDeserializeVisitor<T> v);
+        ValueTask<T> DeserializeI32<T>(IDeserializeVisitor<T> v);
+        ValueTask<T> DeserializeI64<T>(IDeserializeVisitor<T> v);
+        ValueTask<T> DeserializeFloat<T>(IDeserializeVisitor<T> v);
+        ValueTask<T> DeserializeDouble<T>(IDeserializeVisitor<T> v);
+        ValueTask<T> DeserializeDecimal<T>(IDeserializeVisitor<T> v);
+        ValueTask<T> DeserializeString<T>(IDeserializeVisitor<T>  v);
+        ValueTask<T> DeserializeIdentifier<T>(IDeserializeVisitor<T>  v);
+        ValueTask<T> DeserializeType<T>(string typeName, ReadOnlySpan<string> fieldNames, IDeserializeVisitor<T> v);
+        ValueTask<T> DeserializeEnumerable<T>(IDeserializeVisitor<T>  v);
+        ValueTask<T> DeserializeDictionary<T>(IDeserializeVisitor<T>  v);
+        ValueTask<T> DeserializeNullableRef<T>(IDeserializeVisitor<T>  v);
     }
 }

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Immutable;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Serde.Json
 {
@@ -30,12 +31,16 @@ namespace Serde.Json
                 return new Array(builder.ToImmutable());
             }
 
-            public JsonValue VisitDictionary<D>(ref D d)
-                where D : IDeserializeDictionary
+            public async ValueTask<JsonValue> VisitDictionary<D>(IDeserializeDictionary d)
             {
                 var builder = ImmutableDictionary.CreateBuilder<string, JsonValue>();
-                while (d.TryGetNextEntry<string, StringWrap, JsonValue, JsonValue>(out var next))
+                while (true)
                 {
+                    var (hasNext, next) = await d.TryGetNextEntry<string, StringWrap, JsonValue, JsonValue>();
+                    if (!hasNext)
+                    {
+                        break;
+                    }
                     builder.Add(next.Item1, next.Item2);
                 }
                 return new Object(builder.ToImmutable());

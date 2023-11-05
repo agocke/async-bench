@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Serde
 {
@@ -43,8 +44,7 @@ namespace Serde
             private struct Visitor : IDeserializeVisitor<Dictionary<TKey, TValue>>
             {
                 public string ExpectedTypeName => "Dictionary<" + typeof(TKey).Name + ", " + typeof(TValue).Name + ">";
-                public Dictionary<TKey, TValue> VisitDictionary<D>(ref D d)
-                    where D : IDeserializeDictionary
+                public async ValueTask<Dictionary<TKey, TValue>> VisitDictionary(IDeserializeDictionary d)
                 {
                     Dictionary<TKey, TValue> dict;
                     if (d.SizeOpt is int size)
@@ -56,10 +56,16 @@ namespace Serde
                         size = -1; // Set initial size to unknown
                         dict = new Dictionary<TKey, TValue>();
                     }
-                    while (d.TryGetNextEntry<TKey, TKeyWrap, TValue, TValueWrap>(out var next))
+                    while (true)
                     {
-                        dict.Add(next.Item1, next.Item2);
+                        var (hasNext, entry) = await d.TryGetNextEntry<TKey, TKeyWrap, TValue, TValueWrap>();
+                        if (!hasNext)
+                        {
+                            break;
+                        }
+                        dict.Add(entry.Item1, entry.Item2);
                     }
+
                     if (size >= 0 && size != dict.Count)
                     {
                         throw new InvalidDeserializeValueException($"Expected {size} items, found {dict.Count}");

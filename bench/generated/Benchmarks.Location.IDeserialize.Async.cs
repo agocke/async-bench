@@ -2,6 +2,7 @@
 #nullable enable
 extern alias SerdeAsync;
 using System;
+using System.Threading.Tasks;
 using SerdeAsync::Serde;
 
 namespace Benchmarks
@@ -65,7 +66,7 @@ namespace Benchmarks
                 }
             }
 
-            Benchmarks.Location IDeserializeVisitor<Benchmarks.Location>.VisitDictionary<D>(ref D d)
+            async ValueTask<Benchmarks.Location> IDeserializeVisitor<Benchmarks.Location>.VisitDictionary(IDeserializeDictionary d)
             {
                 int _l_id = default !;
                 string _l_address1 = default !;
@@ -77,8 +78,13 @@ namespace Benchmarks
                 string _l_phonenumber = default !;
                 string _l_country = default !;
                 ushort _r_assignedValid = 0b0;
-                while (d.TryGetNextKey<byte, FieldNameVisitor>(out byte key))
+                while (true)
                 {
+                    var (hasNext, key) = await d.TryGetNextKey<byte, FieldNameVisitor>();
+                    if (!hasNext)
+                    {
+                        break;
+                    }
                     switch (key)
                     {
                         case 1:
