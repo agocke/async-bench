@@ -14,8 +14,7 @@ namespace Serde
     /// </summary>
     public interface IDeserialize<T>
     {
-        abstract static T Deserialize<D>(ref D deserializer)
-            where D : IDeserializer;
+        abstract static ValueTask<T> Deserialize(IDeserializer deserializer);
     }
 
     /// <summary>

@@ -8,9 +8,9 @@ namespace Serde.Json
 {
     partial record JsonValue : IDeserialize<JsonValue>
     {
-        static JsonValue IDeserialize<JsonValue>.Deserialize<D>(ref D deserializer)
+        static ValueTask<JsonValue> IDeserialize<JsonValue>.Deserialize(IDeserializer deserializer)
         {
-            return deserializer.DeserializeAny<JsonValue, Visitor>(Visitor.Instance);
+            return deserializer.DeserializeAny(Visitor.Instance);
         }
 
         private sealed class Visitor : IDeserializeVisitor<JsonValue>

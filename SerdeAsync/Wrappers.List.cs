@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 
 namespace Serde
 {
@@ -69,7 +70,7 @@ namespace Serde
         public readonly struct DeserializeImpl<T, TWrap> : IDeserialize<T[]>
             where TWrap : IDeserialize<T>
         {
-            static T[] IDeserialize<T[]>.Deserialize<D>(ref D deserializer)
+            static ValueTask<T[]> IDeserialize<T[]>.Deserialize(IDeserializer deserializer)
             {
                 return deserializer.DeserializeEnumerable<T[], SerdeVisitor>(new SerdeVisitor());
             }
