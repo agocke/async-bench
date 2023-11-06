@@ -37,9 +37,9 @@ namespace Serde
             where TKeyWrap : IDeserialize<TKey>
             where TValueWrap : IDeserialize<TValue>
         {
-            static Dictionary<TKey, TValue> IDeserialize<Dictionary<TKey, TValue>>.Deserialize<D>(ref D deserializer)
+            static ValueTask<Dictionary<TKey, TValue>> IDeserialize<Dictionary<TKey, TValue>>.Deserialize(IDeserializer deserializer)
             {
-                return deserializer.DeserializeDictionary<Dictionary<TKey, TValue>, Visitor>(new Visitor());
+                return deserializer.DeserializeDictionary(new Visitor());
             }
             private struct Visitor : IDeserializeVisitor<Dictionary<TKey, TValue>>
             {

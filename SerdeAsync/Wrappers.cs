@@ -226,7 +226,7 @@ namespace Serde
         static ValueTask<short> Serde.IDeserialize<short>.Deserialize(IDeserializer deserializer)
         {
             var visitor = new SerdeVisitor();
-            return deserializer.DeserializeI16<short, SerdeVisitor>(visitor);
+            return deserializer.DeserializeI16(visitor);
         }
 
         private sealed class SerdeVisitor : Serde.IDeserializeVisitor<short>
@@ -312,7 +312,7 @@ namespace Serde
         static ValueTask<double> Serde.IDeserialize<double>.Deserialize(IDeserializer deserializer)
         {
             var visitor = new SerdeVisitor();
-            return deserializer.DeserializeDouble<double, SerdeVisitor>(visitor);
+            return deserializer.DeserializeDouble(visitor);
         }
 
         private sealed class SerdeVisitor : Serde.IDeserializeVisitor<double>
@@ -426,9 +426,9 @@ namespace Serde
                     return null;
                 }
 
-                T? IDeserializeVisitor<T?>.VisitNotNull<D>(ref D d)
+                async ValueTask<T?> IDeserializeVisitor<T?>.VisitNotNull(IDeserializer d)
                 {
-                    return TWrap.Deserialize(ref d);
+                    return await TWrap.Deserialize(d);
                 }
             }
         }
@@ -461,9 +461,9 @@ namespace Serde
             where T : class
             where TWrap : IDeserialize<T>
         {
-            public static T? Deserialize<D>(ref D deserializer) where D : IDeserializer
+            public static ValueTask<T?> Deserialize(IDeserializer deserializer)
             {
-                return deserializer.DeserializeNullableRef<T?, Visitor>(new Visitor());
+                return deserializer.DeserializeNullableRef(new Visitor());
             }
 
             private struct Visitor : IDeserializeVisitor<T?>
@@ -475,9 +475,9 @@ namespace Serde
                     return null;
                 }
 
-                T? IDeserializeVisitor<T?>.VisitNotNull<D>(ref D d)
+                ValueTask<T?> IDeserializeVisitor<T?>.VisitNotNull(IDeserializer d)
                 {
-                    return TWrap.Deserialize(ref d);
+                    return TWrap.Deserialize(d)!;
                 }
             }
         }

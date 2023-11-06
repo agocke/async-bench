@@ -20,12 +20,16 @@ namespace Serde.Json
 
             public string ExpectedTypeName => nameof(JsonValue);
 
-            public JsonValue VisitEnumerable<D>(ref D d)
-                where D : IDeserializeEnumerable
+            public async ValueTask<JsonValue> VisitEnumerable<D>(IDeserializeEnumerable d)
             {
                 var builder = ImmutableArray.CreateBuilder<JsonValue>(d.SizeOpt ?? 3);
-                while (d.TryGetNext<JsonValue, JsonValue>(out var next))
+                while (true)
                 {
+                    var (hasNext, next) = await d.TryGetNext<JsonValue, JsonValue>();
+                    if (!hasNext)
+                    {
+                        break;
+                    }
                     builder.Add(next);
                 }
                 return new Array(builder.ToImmutable());

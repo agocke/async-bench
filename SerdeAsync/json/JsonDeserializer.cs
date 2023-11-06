@@ -66,7 +66,7 @@ namespace Serde.Json
 
                 case JsonTokenType.True:
                 case JsonTokenType.False:
-                    result = DeserializeBool<T>(v);
+                    result = await DeserializeBool<T>(v);
                     break;
 
                 default:
@@ -122,7 +122,7 @@ namespace Serde.Json
             }
 
             var enumerable = new DeEnumerable(this);
-            return v.VisitEnumerable(ref enumerable);
+            return await v.VisitEnumerable(enumerable);
         }
 
         private struct DeEnumerable : IDeserializeEnumerable
@@ -134,21 +134,19 @@ namespace Serde.Json
             }
             public int? SizeOpt => null;
 
-            public bool TryGetNext<T, D>([MaybeNullWhen(false)] out T next)
-                where D : IDeserialize<T>
+            public async ValueTask<(bool HasNext, T Next)> TryGetNext<T, D>() where D : IDeserialize<T>
             {
+                // Get temp (copied) reader
                 var reader = _deserializer.GetReader();
                 // Check if the next token is the end of the array, but don't advance the stream if not
-                reader.ReadOrThrow();
+                await reader.ReadOrThrow();
                 if (reader.TokenType == JsonTokenType.EndArray)
                 {
                     _deserializer.SaveState(reader);
-                    next = default;
-                    return false;
+                    return (false, default!);
                 }
                 // Don't save state
-                next = D.Deserialize(ref _deserializer);
-                return true;
+                return (true, await D.Deserialize(_deserializer));
             }
         }
 
@@ -172,7 +170,7 @@ namespace Serde.Json
                 {
                     return (false, default);
                 }
-                var nextValue = GetNextValue<V, DV>();
+                var nextValue = await GetNextValue<V, DV>();
                 return (true, (key, nextValue));
             }
 
@@ -189,7 +187,7 @@ namespace Serde.Json
                             _deserializer.SaveState(reader);
                             return (false, default!);
                         case JsonTokenType.PropertyName:
-                            return (true, D.Deserialize(ref _deserializer));
+                            return (true, await D.Deserialize(_deserializer));
                         default:
                             // If we aren't at a property name, we must be at a value and intending to skip it
                             // Call Skip in case we are starting a new array or object. Doesn't do
@@ -202,9 +200,9 @@ namespace Serde.Json
                 }
             }
 
-            public V GetNextValue<V, D>() where D : IDeserialize<V>
+            public ValueTask<V> GetNextValue<V, D>() where D : IDeserialize<V>
             {
-                return D.Deserialize(ref _deserializer);
+                return D.Deserialize(_deserializer);
             }
         }
 
@@ -279,8 +277,7 @@ namespace Serde.Json
             }
             else
             {
-                var deserializer = this;
-                return v.VisitNotNull(ref deserializer);
+                return await v.VisitNotNull(this);
             }
         }
     }

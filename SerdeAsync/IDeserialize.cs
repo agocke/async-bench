@@ -46,18 +46,17 @@ namespace Serde
         T VisitDecimal(decimal d) => throw new InvalidDeserializeValueException("Expected type " + ExpectedTypeName);
         T VisitString(string s) => throw new InvalidDeserializeValueException("Expected type " + ExpectedTypeName);
         T VisitUtf8Span(ReadOnlySpan<byte> s) => throw new InvalidDeserializeValueException("Expected type " + ExpectedTypeName);
-        T VisitEnumerable<D>(ref D d) where D : IDeserializeEnumerable
+        ValueTask<T> VisitEnumerable(IDeserializeEnumerable d)
             => throw new InvalidDeserializeValueException("Expected type " + ExpectedTypeName);
         ValueTask<T> VisitDictionary(IDeserializeDictionary d)
             => throw new InvalidDeserializeValueException("Expected type " + ExpectedTypeName);
         T VisitNull() => throw new InvalidOperationException("Expected type " + ExpectedTypeName);
-        T VisitNotNull<D>(ref D d) where D : IDeserializer => throw new InvalidOperationException("Expected type " + ExpectedTypeName);
+        ValueTask<T> VisitNotNull(IDeserializer d) => throw new InvalidOperationException("Expected type " + ExpectedTypeName);
     }
 
     public interface IDeserializeEnumerable
     {
-        bool TryGetNext<T, D>([MaybeNullWhen(false)] out T next)
-            where D : IDeserialize<T>;
+        ValueTask<(bool HasNext, T Next)> TryGetNext<T, D>() where D : IDeserialize<T>;
         int? SizeOpt { get; }
     }
 
@@ -65,7 +64,7 @@ namespace Serde
     {
         ValueTask<(bool HasNext, K Key)> TryGetNextKey<K, D>()
             where D : IDeserialize<K>;
-        V GetNextValue<V, D>() where D : IDeserialize<V>;
+        ValueTask<V> GetNextValue<V, D>() where D : IDeserialize<V>;
         ValueTask<(bool HasNext, (K, V) Entry)> TryGetNextEntry<K, DK, V, DV>()
             where DK : IDeserialize<K>
             where DV : IDeserialize<V>;
