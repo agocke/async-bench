@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "bench", "bench\bench.csproj", "{439E0B54-C3C8-4AA4-80EA-908CF0FA4242}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SerdeAsync", "SerdeAsync\SerdeAsync.csproj", "{45944CBF-50C2-4892-8416-2D3E2C72AEB0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Serde", "SerdeSync\Serde.csproj", "{6CE79F93-3312-4B78-B03F-0856B686A1C8}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{439E0B54-C3C8-4AA4-80EA-908CF0FA4242}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{439E0B54-C3C8-4AA4-80EA-908CF0FA4242}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{439E0B54-C3C8-4AA4-80EA-908CF0FA4242}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{439E0B54-C3C8-4AA4-80EA-908CF0FA4242}.Release|Any CPU.Build.0 = Release|Any CPU
+		{45944CBF-50C2-4892-8416-2D3E2C72AEB0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{45944CBF-50C2-4892-8416-2D3E2C72AEB0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{45944CBF-50C2-4892-8416-2D3E2C72AEB0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{45944CBF-50C2-4892-8416-2D3E2C72AEB0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6CE79F93-3312-4B78-B03F-0856B686A1C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6CE79F93-3312-4B78-B03F-0856B686A1C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6CE79F93-3312-4B78-B03F-0856B686A1C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6CE79F93-3312-4B78-B03F-0856B686A1C8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

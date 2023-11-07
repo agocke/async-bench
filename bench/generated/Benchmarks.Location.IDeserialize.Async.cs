@@ -2,13 +2,14 @@
 #nullable enable
 extern alias SerdeAsync;
 using System;
+using System.Threading.Tasks;
 using SerdeAsync::Serde;
 
 namespace Benchmarks
 {
     partial record Location : IDeserialize<Benchmarks.Location>
     {
-        static Benchmarks.Location IDeserialize<Benchmarks.Location>.Deserialize<D>(ref D deserializer)
+        static ValueTask<Benchmarks.Location> IDeserialize<Benchmarks.Location>.Deserialize(IDeserializer deserializer)
         {
             var visitor = new SerdeAsyncVisitor();
             var fieldNames = new[]
@@ -23,7 +24,7 @@ namespace Benchmarks
                 "PhoneNumber",
                 "Country"
             };
-            return deserializer.DeserializeType<Benchmarks.Location, SerdeAsyncVisitor>("Location", fieldNames, visitor);
+            return deserializer.DeserializeType("Location", fieldNames, visitor);
         }
 
         private sealed class SerdeAsyncVisitor : IDeserializeVisitor<Benchmarks.Location>
@@ -32,8 +33,8 @@ namespace Benchmarks
 
             private struct FieldNameVisitor : IDeserialize<byte>, IDeserializeVisitor<byte>
             {
-                public static byte Deserialize<D>(ref D deserializer)
-                    where D : IDeserializer => deserializer.DeserializeString<byte, FieldNameVisitor>(new FieldNameVisitor());
+                public static ValueTask<byte> Deserialize(IDeserializer deserializer)
+                    => deserializer.DeserializeString(new FieldNameVisitor());
                 public string ExpectedTypeName => "string";
 
                 byte IDeserializeVisitor<byte>.VisitString(string s) => VisitUtf8Span(System.Text.Encoding.UTF8.GetBytes(s));
@@ -65,7 +66,7 @@ namespace Benchmarks
                 }
             }
 
-            Benchmarks.Location IDeserializeVisitor<Benchmarks.Location>.VisitDictionary<D>(ref D d)
+            async ValueTask<Benchmarks.Location> IDeserializeVisitor<Benchmarks.Location>.VisitDictionary(IDeserializeDictionary d)
             {
                 int _l_id = default !;
                 string _l_address1 = default !;
@@ -77,44 +78,49 @@ namespace Benchmarks
                 string _l_phonenumber = default !;
                 string _l_country = default !;
                 ushort _r_assignedValid = 0b0;
-                while (d.TryGetNextKey<byte, FieldNameVisitor>(out byte key))
+                while (true)
                 {
+                    var (hasNext, key) = await d.TryGetNextKey<byte, FieldNameVisitor>();
+                    if (!hasNext)
+                    {
+                        break;
+                    }
                     switch (key)
                     {
                         case 1:
-                            _l_id = d.GetNextValue<int, Int32Wrap>();
+                            _l_id = await d.GetNextValue<int, Int32Wrap>();
                             _r_assignedValid |= ((ushort)1) << 0;
                             break;
                         case 2:
-                            _l_address1 = d.GetNextValue<string, StringWrap>();
+                            _l_address1 = await d.GetNextValue<string, StringWrap>();
                             _r_assignedValid |= ((ushort)1) << 1;
                             break;
                         case 3:
-                            _l_address2 = d.GetNextValue<string, StringWrap>();
+                            _l_address2 = await d.GetNextValue<string, StringWrap>();
                             _r_assignedValid |= ((ushort)1) << 2;
                             break;
                         case 4:
-                            _l_city = d.GetNextValue<string, StringWrap>();
+                            _l_city = await d.GetNextValue<string, StringWrap>();
                             _r_assignedValid |= ((ushort)1) << 3;
                             break;
                         case 5:
-                            _l_state = d.GetNextValue<string, StringWrap>();
+                            _l_state = await d.GetNextValue<string, StringWrap>();
                             _r_assignedValid |= ((ushort)1) << 4;
                             break;
                         case 6:
-                            _l_postalcode = d.GetNextValue<string, StringWrap>();
+                            _l_postalcode = await d.GetNextValue<string, StringWrap>();
                             _r_assignedValid |= ((ushort)1) << 5;
                             break;
                         case 7:
-                            _l_name = d.GetNextValue<string, StringWrap>();
+                            _l_name = await d.GetNextValue<string, StringWrap>();
                             _r_assignedValid |= ((ushort)1) << 6;
                             break;
                         case 8:
-                            _l_phonenumber = d.GetNextValue<string, StringWrap>();
+                            _l_phonenumber = await d.GetNextValue<string, StringWrap>();
                             _r_assignedValid |= ((ushort)1) << 7;
                             break;
                         case 9:
-                            _l_country = d.GetNextValue<string, StringWrap>();
+                            _l_country = await d.GetNextValue<string, StringWrap>();
                             _r_assignedValid |= ((ushort)1) << 8;
                             break;
                     }

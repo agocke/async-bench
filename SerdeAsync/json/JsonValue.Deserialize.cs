@@ -2,14 +2,15 @@
 using System;
 using System.Collections.Immutable;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Serde.Json
 {
     partial record JsonValue : IDeserialize<JsonValue>
     {
-        static JsonValue IDeserialize<JsonValue>.Deserialize<D>(ref D deserializer)
+        static ValueTask<JsonValue> IDeserialize<JsonValue>.Deserialize(IDeserializer deserializer)
         {
-            return deserializer.DeserializeAny<JsonValue, Visitor>(Visitor.Instance);
+            return deserializer.DeserializeAny(Visitor.Instance);
         }
 
         private sealed class Visitor : IDeserializeVisitor<JsonValue>
@@ -19,23 +20,31 @@ namespace Serde.Json
 
             public string ExpectedTypeName => nameof(JsonValue);
 
-            public JsonValue VisitEnumerable<D>(ref D d)
-                where D : IDeserializeEnumerable
+            public async ValueTask<JsonValue> VisitEnumerable<D>(IDeserializeEnumerable d)
             {
                 var builder = ImmutableArray.CreateBuilder<JsonValue>(d.SizeOpt ?? 3);
-                while (d.TryGetNext<JsonValue, JsonValue>(out var next))
+                while (true)
                 {
+                    var (hasNext, next) = await d.TryGetNext<JsonValue, JsonValue>();
+                    if (!hasNext)
+                    {
+                        break;
+                    }
                     builder.Add(next);
                 }
                 return new Array(builder.ToImmutable());
             }
 
-            public JsonValue VisitDictionary<D>(ref D d)
-                where D : IDeserializeDictionary
+            public async ValueTask<JsonValue> VisitDictionary<D>(IDeserializeDictionary d)
             {
                 var builder = ImmutableDictionary.CreateBuilder<string, JsonValue>();
-                while (d.TryGetNextEntry<string, StringWrap, JsonValue, JsonValue>(out var next))
+                while (true)
                 {
+                    var (hasNext, next) = await d.TryGetNextEntry<string, StringWrap, JsonValue, JsonValue>();
+                    if (!hasNext)
+                    {
+                        break;
+                    }
                     builder.Add(next.Item1, next.Item2);
                 }
                 return new Object(builder.ToImmutable());
