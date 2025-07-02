@@ -3,7 +3,9 @@
 // See the LICENSE file in the project root for more information.
 
 extern alias SerdeSync;
-extern alias SerdeAsync;
+extern alias SerdeCompilerAsync;
+extern alias SerdeTask;
+extern alias SerdeValueTask;
 
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -11,10 +13,11 @@ using BenchmarkDotNet.Attributes;
 
 namespace Benchmarks
 {
-    //[GenericTypeArguments(typeof(LoginViewModel))]
     [GenericTypeArguments(typeof(Location))]
     public class DeserializeFromString<T>
-        where T : SerdeSync::Serde.IDeserialize<T>, SerdeAsync::Serde.IDeserialize<T>
+        where T : SerdeSync::Serde.IDeserializeProvider<T>,
+            SerdeTask::Serde.IDeserializeProvider<T>,
+            SerdeValueTask::Serde.IDeserializeProvider<T>
     {
         private JsonSerializerOptions _options = null!;
         private string value = null!;
@@ -31,16 +34,18 @@ namespace Benchmarks
         }
 
         [Benchmark]
-        public T? SystemText()
-        {
-            return System.Text.Json.JsonSerializer.Deserialize<T>(value, _options);
-        }
+        public T SerdeSync() => SerdeSync::Serde.Json.JsonSerializer.Deserialize<T>(value);
 
         [Benchmark]
-        public T SerdeJson() => SerdeSync::Serde.Json.JsonSerializer.Deserialize<T>(value);
+        public T SerdeTask()
+            => SerdeTask::Serde.Json.JsonSerializer.Deserialize<T>(value);
 
         [Benchmark]
-        public T SerdeJsonAsync()
-            => SerdeAsync::Serde.Json.JsonSerializer.DeserializeAsync<T>(value).Result;
+        public T SerdeCompilerAsync()
+            => SerdeCompilerAsync::Serde.Json.JsonSerializer.Deserialize<T>(value);
+
+        //[Benchmark]
+        //public T SerdeValueTask()
+        //    => SerdeValueTask::Serde.Json.JsonSerializer.Deserialize<T>(value);
     }
 }

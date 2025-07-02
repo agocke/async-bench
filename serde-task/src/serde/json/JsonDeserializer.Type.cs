@@ -15,8 +15,8 @@ partial class JsonDeserializer<TReader> : ITypeDeserializer
         return (await TryReadIndexWithName(info)).Item1;
     }
 
-    async Task<(int, string? errorName)> ITypeDeserializer.TryReadIndexWithName(ISerdeInfo serdeInfo)
-        => await TryReadIndexWithName(serdeInfo);
+    Task<(int, string? errorName)> ITypeDeserializer.TryReadIndexWithName(ISerdeInfo serdeInfo)
+        => TryReadIndexWithName(serdeInfo);
 
     private async Task<(int, string? errorName)> TryReadIndexWithName(ISerdeInfo serdeInfo)
     {
@@ -144,10 +144,10 @@ partial class JsonDeserializer<TReader> : ITypeDeserializer
         ReadColon();
         return Task.FromResult(ReadDecimal());
     }
-    Task<string> ITypeDeserializer.ReadString(ISerdeInfo info, int index)
+    async Task<string> ITypeDeserializer.ReadString(ISerdeInfo info, int index)
     {
         ReadColon();
-        return Task.FromResult(this.ReadString());
+        return this.ReadString();
     }
     Task<DateTime> ITypeDeserializer.ReadDateTime(ISerdeInfo info, int index)
     {

@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <IsPackable>false</IsPackable>
     <DebugType>embedded</DebugType>
@@ -12,7 +12,9 @@
     <NoWarn>$(NoWarn);CS1591</NoWarn>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Version>$(SerdeAssemblyVersion)</Version>
-    <LangVersion>13.0</LangVersion>
+    <RoslynCompilerType>Custom</RoslynCompilerType>
+    <Features>$(Features);runtime-async=on</Features>
+    <LangVersion>preview</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -30,6 +32,10 @@
     <PackageReference Include="StaticCs">
       <Pack>false</Pack>
     </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Net.Compilers.Toolset" Version="5.0.0-1.25259.6" PrivateAssets="all" IsImplicitlyDefined="true" />
   </ItemGroup>
 
 </Project>
