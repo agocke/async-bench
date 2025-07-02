@@ -7,25 +7,14 @@ namespace Benchmarks
 {
     internal static class DataGenerator
     {
-        public static T GenerateSerialize<T>() where T : SerdeSync::Serde.ISerialize
+        public static T GenerateSerialize<T>() where T : SerdeSync::Serde.ISerializeProvider<T>
         {
-            if (typeof(T) == typeof(LoginViewModel))
-                return (T)(object)CreateLoginViewModel();
             if (typeof(T) == typeof(Location))
                 return (T)(object)CreateLocation();
             if (typeof(T) == typeof(AllInOne))
                 return (T)(object)new AllInOne();
 
             throw new InvalidOperationException();
-
-            static LoginViewModel CreateLoginViewModel() => new LoginViewModel
-            {
-                Email = "name.familyname@not.com",
-                // [SuppressMessage("Microsoft.Security", "CS002:SecretInNextLine", Justification="Dummy credentials for perf testing.")]
-                Password = "abcdefgh123456!@",
-                RememberMe = true
-            };
-
         }
 
         public static Location CreateLocation() => new Location
@@ -43,8 +32,6 @@ namespace Benchmarks
 
         public static string GenerateDeserialize<T>()
         {
-            if (typeof(T) == typeof(LoginViewModel))
-                return LoginViewSample;
             if (typeof(T) == typeof(Location))
                 return LocationSample;
             if (typeof(T) == typeof(AllInOne))
@@ -52,14 +39,6 @@ namespace Benchmarks
 
             throw new InvalidOperationException("Unexpected type");
         }
-
-        public const string LoginViewSample = """
-{
-    "email": "name.familyname@not.com",
-    "password": "abcdefgh123456!@",
-    "rememberMe": true
-}
-""";
 
         public const string LocationSample = """
 {

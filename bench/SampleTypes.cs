@@ -3,14 +3,6 @@
 
 namespace Benchmarks
 {
-    // the view models come from a real world app called "AllReady"
-    public partial class LoginViewModel
-    {
-        public string Email { get; set; }
-        public string Password { get; set; }
-        public bool RememberMe { get; set; }
-    }
-
     public partial record Location
     {
         public int Id { get; set; }
