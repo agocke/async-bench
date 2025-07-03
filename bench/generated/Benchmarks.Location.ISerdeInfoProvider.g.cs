@@ -1,3 +1,4 @@
+extern alias SerdeSync;
 
 #nullable enable
 
@@ -5,19 +6,19 @@ namespace Benchmarks;
 
 partial record Location
 {
-    private static global::Serde.ISerdeInfo s_serdeInfo = Serde.SerdeInfo.MakeCustom(
+    private static SerdeSync::Serde.ISerdeInfo s_syncSerdeInfo = SerdeSync::Serde.SerdeInfo.MakeCustom(
         "Location",
     typeof(Benchmarks.Location).GetCustomAttributesData(),
-    new (string, global::Serde.ISerdeInfo, System.Reflection.MemberInfo?)[] {
-        ("id", global::Serde.SerdeInfoProvider.GetSerializeInfo<int, global::Serde.I32Proxy>(), typeof(Benchmarks.Location).GetProperty("Id")),
-        ("address1", global::Serde.SerdeInfoProvider.GetSerializeInfo<string, global::Serde.StringProxy>(), typeof(Benchmarks.Location).GetProperty("Address1")),
-        ("address2", global::Serde.SerdeInfoProvider.GetSerializeInfo<string, global::Serde.StringProxy>(), typeof(Benchmarks.Location).GetProperty("Address2")),
-        ("city", global::Serde.SerdeInfoProvider.GetSerializeInfo<string, global::Serde.StringProxy>(), typeof(Benchmarks.Location).GetProperty("City")),
-        ("state", global::Serde.SerdeInfoProvider.GetSerializeInfo<string, global::Serde.StringProxy>(), typeof(Benchmarks.Location).GetProperty("State")),
-        ("postalCode", global::Serde.SerdeInfoProvider.GetSerializeInfo<string, global::Serde.StringProxy>(), typeof(Benchmarks.Location).GetProperty("PostalCode")),
-        ("name", global::Serde.SerdeInfoProvider.GetSerializeInfo<string, global::Serde.StringProxy>(), typeof(Benchmarks.Location).GetProperty("Name")),
-        ("phoneNumber", global::Serde.SerdeInfoProvider.GetSerializeInfo<string, global::Serde.StringProxy>(), typeof(Benchmarks.Location).GetProperty("PhoneNumber")),
-        ("country", global::Serde.SerdeInfoProvider.GetSerializeInfo<string, global::Serde.StringProxy>(), typeof(Benchmarks.Location).GetProperty("Country"))
+    new (string, SerdeSync::Serde.ISerdeInfo, System.Reflection.MemberInfo?)[] {
+        ("id", SerdeSync::Serde.SerdeInfoProvider.GetSerializeInfo<int, SerdeSync::Serde.I32Proxy>(), typeof(Benchmarks.Location).GetProperty("Id")),
+        ("address1", SerdeSync::Serde.SerdeInfoProvider.GetSerializeInfo<string, SerdeSync::Serde.StringProxy>(), typeof(Benchmarks.Location).GetProperty("Address1")),
+        ("address2", SerdeSync::Serde.SerdeInfoProvider.GetSerializeInfo<string, SerdeSync::Serde.StringProxy>(), typeof(Benchmarks.Location).GetProperty("Address2")),
+        ("city", SerdeSync::Serde.SerdeInfoProvider.GetSerializeInfo<string, SerdeSync::Serde.StringProxy>(), typeof(Benchmarks.Location).GetProperty("City")),
+        ("state", SerdeSync::Serde.SerdeInfoProvider.GetSerializeInfo<string, SerdeSync::Serde.StringProxy>(), typeof(Benchmarks.Location).GetProperty("State")),
+        ("postalCode", SerdeSync::Serde.SerdeInfoProvider.GetSerializeInfo<string, SerdeSync::Serde.StringProxy>(), typeof(Benchmarks.Location).GetProperty("PostalCode")),
+        ("name", SerdeSync::Serde.SerdeInfoProvider.GetSerializeInfo<string, SerdeSync::Serde.StringProxy>(), typeof(Benchmarks.Location).GetProperty("Name")),
+        ("phoneNumber", SerdeSync::Serde.SerdeInfoProvider.GetSerializeInfo<string, SerdeSync::Serde.StringProxy>(), typeof(Benchmarks.Location).GetProperty("PhoneNumber")),
+        ("country", SerdeSync::Serde.SerdeInfoProvider.GetSerializeInfo<string, SerdeSync::Serde.StringProxy>(), typeof(Benchmarks.Location).GetProperty("Country"))
     }
     );
 }

@@ -24,8 +24,9 @@ Console.WriteLine(loc1 == loc2);
 
 #else
 
-BenchmarkRunner.Run<DeserializeFromString<Location>>();
-//var config = DefaultConfig.Instance.AddDiagnoser(MemoryDiagnoser.Default);
+//BenchmarkRunner.Run<DeserializeFromString<Location>>();
+var config = DefaultConfig.Instance.AddDiagnoser(MemoryDiagnoser.Default);
+BenchmarkRunner.Run<DeserializeFromString<Location>>(config);
 //var summary = BenchmarkSwitcher.FromAssembly(typeof(DeserializeFromString<>).Assembly)
 //    .Run(args, config);
 

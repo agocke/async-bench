@@ -10,7 +10,7 @@ partial record Location
 {
     sealed partial class _DeObj : SerdeSync::Serde.IDeserialize<Benchmarks.Location>
     {
-        SerdeSync::Serde.ISerdeInfo SerdeSync::Serde.ISerdeInfoProvider.SerdeInfo => Benchmarks.Location.s_serdeInfo;
+        SerdeSync::Serde.ISerdeInfo SerdeSync::Serde.ISerdeInfoProvider.SerdeInfo => Benchmarks.Location.s_syncSerdeInfo;
 
         Benchmarks.Location SerdeSync::Serde.IDeserialize<Benchmarks.Location>.Deserialize(IDeserializer deserializer)
         {
