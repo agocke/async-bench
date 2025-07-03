@@ -4,6 +4,7 @@
 
 extern alias SerdeSync;
 extern alias SerdeTask;
+extern alias SerdeValueTask;
 
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -13,7 +14,9 @@ namespace Benchmarks
 {
     [GenericTypeArguments(typeof(Location))]
     public class DeserializeFromString<T>
-        where T : SerdeSync::Serde.IDeserializeProvider<T>, SerdeTask::Serde.IDeserializeProvider<T>
+        where T : SerdeSync::Serde.IDeserializeProvider<T>,
+            SerdeTask::Serde.IDeserializeProvider<T>,
+            SerdeValueTask::Serde.IDeserializeProvider<T>
     {
         private JsonSerializerOptions _options = null!;
         private string value = null!;
@@ -35,5 +38,9 @@ namespace Benchmarks
         [Benchmark]
         public T SerdeTask()
             => SerdeTask::Serde.Json.JsonSerializer.Deserialize<T>(value);
+
+        [Benchmark]
+        public T SerdeValueTask()
+            => SerdeValueTask::Serde.Json.JsonSerializer.Deserialize<T>(value);
     }
 }

@@ -14,6 +14,9 @@
     <ProjectReference Include="../serde-task/src/serde/SerdeTask.csproj">
       <Aliases>SerdeTask</Aliases>
     </ProjectReference>
+    <ProjectReference Include="../serde-valuetask/src/serde/SerdeValueTask.csproj">
+      <Aliases>SerdeValueTask</Aliases>
+    </ProjectReference>
   </ItemGroup>
 
 </Project>
