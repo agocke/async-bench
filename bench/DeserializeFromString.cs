@@ -45,8 +45,8 @@ namespace Benchmarks
         public T SerdeCompasync()
             => SerdeCompasync::Serde.Json.JsonSerializer.Deserialize<T>(value);
 
-        //[Benchmark]
-        //public T SerdeValueTask()
-        //    => SerdeValueTask::Serde.Json.JsonSerializer.Deserialize<T>(value);
+        [Benchmark]
+        public T SerdeValueTask()
+            => SerdeValueTask::Serde.Json.JsonSerializer.Deserialize<T>(value);
     }
 }

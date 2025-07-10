@@ -3,6 +3,7 @@ extern alias SerdeValueTask;
 #nullable enable
 
 using System;
+using System.Runtime.CompilerServices;
 using SerdeValueTask::Serde;
 
 namespace Benchmarks;
@@ -13,6 +14,7 @@ partial record Location
     {
         SerdeValueTask::Serde.ISerdeInfo SerdeValueTask::Serde.ISerdeInfoProvider.SerdeInfo => Benchmarks.Location.s_valueTaskSerdeInfo;
 
+        [RuntimeAsyncMethodGenerationAttribute(false)]
         async global::System.Threading.Tasks.ValueTask<Benchmarks.Location> SerdeValueTask::Serde.IDeserialize<Benchmarks.Location>.Deserialize(IDeserializer deserializer)
         {
             int _l_id = default!;

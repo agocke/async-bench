@@ -144,10 +144,10 @@ partial class JsonDeserializer<TReader> : ITypeDeserializer
         ReadColon();
         return Task.FromResult(ReadDecimal());
     }
-    Task<string> ITypeDeserializer.ReadString(ISerdeInfo info, int index)
+    async Task<string> ITypeDeserializer.ReadString(ISerdeInfo info, int index)
     {
         ReadColon();
-        return Task.FromResult(this.ReadString());
+        return this.ReadString();
     }
     Task<DateTime> ITypeDeserializer.ReadDateTime(ISerdeInfo info, int index)
     {

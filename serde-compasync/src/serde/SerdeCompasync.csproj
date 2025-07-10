@@ -13,8 +13,9 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Version>$(SerdeAssemblyVersion)</Version>
     <RoslynCompilerType>Custom</RoslynCompilerType>
-    <Features>$(Features);runtime-async=on</Features>
-    <LangVersion>preview</LangVersion>
+    <LangVersion>13.0</LangVersion>
+    <!-- <Features>$(Features);runtime-async=on</Features>
+    <LangVersion>preview</LangVersion> -->
   </PropertyGroup>
 
   <ItemGroup>
@@ -34,8 +35,8 @@
     </PackageReference>
   </ItemGroup>
 
-  <ItemGroup>
+  <!-- <ItemGroup>
     <PackageReference Include="Microsoft.Net.Compilers.Toolset" Version="5.0.0-1.25259.6" PrivateAssets="all" IsImplicitlyDefined="true" />
-  </ItemGroup>
+  </ItemGroup> -->
 
 </Project>
