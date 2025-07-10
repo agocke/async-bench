@@ -12,7 +12,7 @@
   <ItemGroup>
     <PackageReference Include="BenchmarkDotNet" />
     <PackageReference Include="Newtonsoft.JSON" />
-    <ProjectReference Include="../../src/serde/Serde.csproj" />
+    <ProjectReference Include="../../src/serde/SerdeCompasync.csproj" />
     <ProjectReference Include="../../src/generator/SerdeGenerator.csproj" OutputItemType="Analyzer" />
   </ItemGroup>
 

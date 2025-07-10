@@ -3,7 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 extern alias SerdeSync;
-extern alias SerdeCompilerAsync;
+extern alias SerdeCompasync;
 extern alias SerdeTask;
 extern alias SerdeValueTask;
 
@@ -17,7 +17,8 @@ namespace Benchmarks
     public class DeserializeFromString<T>
         where T : SerdeSync::Serde.IDeserializeProvider<T>,
             SerdeTask::Serde.IDeserializeProvider<T>,
-            SerdeValueTask::Serde.IDeserializeProvider<T>
+            SerdeValueTask::Serde.IDeserializeProvider<T>,
+            SerdeCompasync::Serde.IDeserializeProvider<T>
     {
         private JsonSerializerOptions _options = null!;
         private string value = null!;
@@ -41,8 +42,8 @@ namespace Benchmarks
             => SerdeTask::Serde.Json.JsonSerializer.Deserialize<T>(value);
 
         [Benchmark]
-        public T SerdeCompilerAsync()
-            => SerdeCompilerAsync::Serde.Json.JsonSerializer.Deserialize<T>(value);
+        public T SerdeCompasync()
+            => SerdeCompasync::Serde.Json.JsonSerializer.Deserialize<T>(value);
 
         //[Benchmark]
         //public T SerdeValueTask()

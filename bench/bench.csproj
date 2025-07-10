@@ -14,6 +14,9 @@
     <ProjectReference Include="../serde-sync/src/serde/Serde.csproj">
       <Aliases>SerdeSync</Aliases>
     </ProjectReference>
+    <ProjectReference Include="../serde-compasync/src/serde/SerdeCompasync.csproj">
+      <Aliases>SerdeCompasync</Aliases>
+    </ProjectReference>
     <ProjectReference Include="../serde-task/src/serde/SerdeTask.csproj">
       <Aliases>SerdeTask</Aliases>
     </ProjectReference>
